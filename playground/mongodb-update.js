@@ -19,7 +19,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
 // test
 	db.collection('TodosTrial').findOneAndUpdate({ name: 'Andrew' }, {
 			$inc: {
-				age: -1
+				age: -r1
 			}
 		}, {
 			returnOriginal: false
