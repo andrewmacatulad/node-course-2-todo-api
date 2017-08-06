@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+const port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 
@@ -53,8 +54,8 @@ app.get('/todo/:id', (req, res) => {
 	});
 });
 
-app.listen(3000, () => {
-	console.log('Server Started 3000')
+app.listen(port, () => {
+	console.log(`Started up ${port}`);
 })
 
 module.exports = { app };
