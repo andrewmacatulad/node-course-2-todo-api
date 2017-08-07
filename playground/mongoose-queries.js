@@ -7,29 +7,29 @@ const { User } = require('./../server/models/user');
 var id = '5986f3b8d589041bc8ff7fc61';
 
 // Validating ID
-// if(!ObjectID.isValid(id)) {
-// 	console.log('id is not valid')
-// }
+if(!ObjectID.isValid(id)) {
+	console.log('id is not valid')
+}
 
-// Todo.find({
-// 	_id: id
-// }).then((results) => {
-// 	console.log('Todos ', results)
-// });
+Todo.find({
+	_id: id
+}).then((results) => {
+	console.log('Todos ', results)
+});
 
-// // will only grabe the first one
-// Todo.findOne({
-// 	_id: id
-// }).then((result) => {
-// 	console.log('Todo ', result)
-// });
+// will only grabe the first one
+Todo.findOne({
+	_id: id
+}).then((result) => {
+	console.log('Todo ', result)
+});
 
-// Todo.findById(id).then((result) => {
-// 	if(!result) {
-// 		return console.log('id not found')
-// 	}
-// 	console.log('Todo by Id ', result)
-// }).catch(e => console.log(e))
+Todo.findById(id).then((result) => {
+	if(!result) {
+		return console.log('id not found')
+	}
+	console.log('Todo by Id ', result)
+}).catch(e => console.log(e))
 
 // Challenge
 // query the user collection
