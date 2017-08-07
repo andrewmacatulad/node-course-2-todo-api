@@ -11,7 +11,9 @@ const todos = [{
 },
 {
 	_id: new ObjectID(),
-	text: 'Second test todo'
+	text: 'Second test todo',
+	completed: true,
+	completedAt: 23423
 }
 ]
 
@@ -92,7 +94,6 @@ describe('GET /todo/:id', () => {
 
 	it('should return 404 if todo not found', (done) => {
 		const id = new ObjectID();
-		// make sure you get a 404 back
 		request(app)
 			.get(`/todo/${id.toHexString()}`)
 			.expect(404)
@@ -100,10 +101,84 @@ describe('GET /todo/:id', () => {
 	});
 
 	it('should return 404 for non-object ids', (done) => {
-		// /todos/123
 		request(app)
 			.get('/todo/123')
 			.expect(404)
 			.end(done);
 	});
+})
+
+describe('DELETE /todo/:id', () => {
+	it('should remove a todo', (done) => {
+		const id = todos[1]._id.toHexString();
+		request(app)
+			.delete(`/todo/${id}`)
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.todo._id).toBe(id);
+			})
+			.end((err, res) => {
+				if(err) {
+					return done(err);
+				}
+
+				Todo.findById(id).then((todo) => {
+					expect(todo).toNotExist();
+					done();
+				}).catch((e) => done(e));
+			});
+	})
+
+	it('should return a 404 if todo not found', (done) => {
+		const id = new ObjectID();
+		request(app)
+			.delete(`/todo/${id.toHexString()}`)
+			.expect(404)
+			.end(done);
+	})
+
+	it('should return a 404 if object id is invalid', (done) => {
+		request(app)
+			.delete('/todo/123')
+			.expect(404)
+			.end(done);
+	})
+})
+
+describe('PATCH /todo/:id', () => {
+	it('should update the todo', (done) => {
+		const id = todos[0]._id.toHexString();
+		const text = 'this should be the new text';
+			request(app)
+			.patch(`/todo/${id}`)
+			.send({
+				completed: true,
+				text
+			})
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.todo.text).toBe(text);
+				expect(res.body.todo.completed).toBe(true);
+				expect(res.body.todo.completedAt).toBeA('number');
+			})
+			.end(done);
+	})
+
+	it('should clear completedAt when todo is not completed', (done) => {
+		const id = todos[1]._id.toHexString();
+		const text = 'this should be the new text!';
+			request(app)
+			.patch(`/todo/${id}`)
+			.send({
+				completed: false,
+				text
+			})
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.todo.text).toBe(text);
+				expect(res.body.todo.completed).toBe(false);
+				expect(res.body.todo.completedAt).toNotExist();
+			})
+			.end(done);
+	})
 })
