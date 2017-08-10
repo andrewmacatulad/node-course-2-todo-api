@@ -70,6 +70,16 @@ schema.methods.generateAuthToken = function () {
 	})
 }
 
+schema.methods.removeToken = function(token) {
+	var user = this;
+	return user.update({
+		$pull: {
+			tokens: {
+				token
+			}
+		}
+	})
+}
 
 schema.statics.findByToken = function (token) {
 	var User = this;
