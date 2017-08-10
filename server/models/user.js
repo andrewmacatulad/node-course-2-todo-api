@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 const mongoose = require('mongoose');
 const validator = require('validator');
@@ -90,6 +91,23 @@ schema.statics.findByToken = function (token) {
 		'tokens.access': 'auth'
 	})
 }
+
+schema.pre('save', function (next) {
+	var user = this;
+	
+	if(user.isModified('password')) {
+		bcrypt.genSalt(10, (err, salt) => {
+			bcrypt.hash(user.password, salt, (err, hash) => {
+				// since the user.password is still just plain at this point
+				// set it to be the hashPassword
+				user.password = hash;
+				next();
+			})
+		})		
+	} else {
+		next();
+	}
+})
 
 var User = mongoose.model('User', schema);
 
