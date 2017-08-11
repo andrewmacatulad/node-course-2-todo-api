@@ -57,7 +57,7 @@ schema.methods.generateAuthToken = function () {
 	// and pass in the access which is auth
 	// the test123 is the secret key
 	// then toString it
-	const token = jwt.sign({ _id: user._id.toHexString(), access}, 'test123').toString();
+	const token = jwt.sign({ _id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
 	// now add them to the token array
 	// which you will pass the access which is auth
@@ -86,7 +86,7 @@ schema.statics.findByToken = function (token) {
 	var decoded;
 
 	try {
-		decoded = jwt.verify(token, 'test123')
+		decoded = jwt.verify(token, process.env.JWT_SECRET)
 	} catch (e) {
 		// return new Promise((resolve, reject) => {
 		// 	reject();
